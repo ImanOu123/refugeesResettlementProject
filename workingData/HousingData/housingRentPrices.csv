@@ -1,0 +1,73 @@
+Location,Bachelor,1 Bedroom,2 Bedroom,3 Bedroom +
+Barrie CMA,859.5,1151.0,1332.5,1540.5
+Belleville CMA,773.0,949.0,1060.0,1208.0
+Brantford CMA,708.5,935.5,1025.0,1183.5
+Guelph CMA,796.0,1089.5,1224.0,1374.0
+Hamilton CMA,817.0,995.5,1192.5,1390.0
+Kingston CMA,779.0,1054.0,1247.0,1808.5
+Kitchener-Cambridge-Waterloo CMA,799.0,1030.0,1212.5,1267.5
+London CMA,683.0,896.0,1097.0,1257.0
+St. Catharines-Niagara CMA,673.5,892.5,1063.0,1171.5
+Oshawa CMA,871.5,1169.0,1259.0,1438.0
+Ottawa-Gatineau CMA (Ont. part),907.0,1133.0,1353.0,1546.0
+Peterborough CMA,756.0,922.5,1088.5,1277.0
+Greater Sudbury/Grand Sudbury CMA,658.5,880.5,1097.0,1159.5
+Thunder Bay CMA,689.0,843.0,1055.0,1245.5
+Toronto CMA,1111.5,1311.0,1515.5,1688.5
+Windsor CMA,641.0,801.0,930.5,1108.5
+Chatham-Kent CA,574.0,718.0,837.5,816.5
+Zone 1 - Chatham City,573.5,734.0,865.5,816.0
+Zone 2 - Wallaceburg,0,643.0,772.0,802.5
+Zone 3 - Rest of Kent,0,678.5,779.5,817.5
+Cornwall CA,627.5,697.5,847.0,964.0
+Zone 1 - City Centre,604.0,698.0,823.0,1031.5
+Zone 2 - City North,651.5,683.0,847.5,918.5
+Zone 3 - Outlying Areas,0,0,997,0
+Kawartha Lakes CA,720.5,905.5,1153.5,1257.5
+Norfolk CA,580.5,736.5,754.5,912
+North Bay CA,623.5,787.5,978.0,1098.0
+Sarnia CA,713.0,859.5,1000.5,1142.0
+Sault Ste. Marie CA,597.0,758.0,947.0,926.0
+"East End, Rural Sault Ste. Marie",564.5,782.5,919.0,930.5
+Central,608.0,754.0,983.0,986.5
+"West End, Prince",0,697.0,855.0,843.5
+Bracebridge T,0,870.0,1044.0,0
+Brighton MU,0,804.0,888.0,0
+Brock TP,0,866.5,968.0,0
+Erin T,0,0,0,0
+Essex T,0,674,794.5,0
+Haldimand County CY,0,768.5,806.0,843.0
+Gravenhurst T,0,845.5,1001.0,1114
+Greater Napanee T,626.5,745.5,917.5,998.0
+Huntsville T,776,914.5,1078.5,1240
+Kincardine MU,0,902.5,1007.0,0
+Lambton Shores MU,0,0,813.0,0
+Meaford MU,0,708.0,895.0,0
+Mississippi Mills T,0,0,0,0
+North Perth MU,641.5,743.5,848.5,1009.0
+Prince Edward CY,593,850.5,950.5,0
+Saugeen Shores T,0,756.0,1008.0,1334.5
+South Huron MU,0,584.5,678.5,0
+South Dundas MU,0,542.0,604.5,582.0
+Scugog TP,0,840.0,939.0,0
+Temiskaming Shores CY,0,0,0,0
+The Nation M,0,662,691,0
+West Nipissing M,527.5,659.0,818.5,974.0
+West Grey MU,0,644.0,732.0,0
+Arnprior CA,0,779.5,875.5,0
+Brockville CA,627.0,772.0,899.0,913.0
+Carleton Place CA,0,786.0,918.0,0
+Centre Wellington CA,0,886.5,1114.5,1183
+Cobourg CA,0,860.0,1145.5,1310.0
+Collingwood CA,749,956.5,1119.0,1256.0
+Elliot Lake CA,624,543.0,617.5,698.5
+Hawkesbury CA,565.0,613.0,741.0,804.5
+Ingersoll CA,0,795.5,857.5,0
+Kenora CA,560.5,762.5,930.5,0
+Leamington CA,0,849.0,1037.5,974.5
+Midland CA,613,884.0,1038.5,1077.5
+Orillia CA,700.5,925.0,1081.0,1409.0
+Owen Sound CA,652.5,808.0,937.5,1018.0
+Pembroke CA,580.0,686.0,871.0,0
+Petawawa CA,0,695.0,789.0,1000.5
+Port Hope CA,991,1168.5,1291.0,1425.0

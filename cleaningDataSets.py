@@ -108,6 +108,51 @@ def cleanHousingData():
         shutil.move("housingRentPrices.csv", "workingData/HousingData/housingRentPrices.csv")
 
     convertHousingVR()
+
     convertHousingRP()
+def cleanEducationData():
+    cleanHousingData()
+
+    educationWorkbook = load_workbook(filename="workingData/SchoolsData/publicly_funded_schools_xlsx_september_2020_en.xlsx", data_only=True)
+
+    educationSpreadsheet = educationWorkbook["EN"]
+
+    schoolNames = {}
+    schoolLocations = {}
+    schoolType = {}
+    schoolLevel = {}
+    gradeRange = {}
+
+    schoolKey = 0
+    schoolRow = 2
+    schoolListNumber = 0
+
+    for i in range(5850):
+
+        if educationSpreadsheet["K" + str(schoolRow)].value == "Not applicable":
+
+            schoolDictKey = "school" + str(schoolListNumber)
+
+            schoolNames[schoolDictKey] = educationSpreadsheet["G" + str(schoolRow)].value
+            schoolLocations[schoolDictKey] = educationSpreadsheet["O" + str(schoolRow)].value
+            schoolType[schoolDictKey] = educationSpreadsheet["J" + str(schoolRow)].value
+            schoolLevel[schoolDictKey] = educationSpreadsheet["H" + str(schoolRow)].value
+            gradeRange[schoolDictKey] = educationSpreadsheet["T" + str(schoolRow)].value
+
+
+        schoolRow += 1
+
+        schoolListNumber += 1
+
+    with open('educationData.csv', 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["schoolLocation", "schoolName", "schoolType", "schoolLevel", "gradeRange"])
+
+        for (loc, name, ty, level, grades) in zip(schoolLocations.values(), schoolNames.values(), schoolType.values(), schoolLevel.values(), gradeRange.values()):
+            writer.writerow([loc, name, ty, level, grades])
+
+    shutil.move("educationData.csv", "workingData/SchoolsData/educationData.csv")
+
 
 cleanHousingData()
+cleanEducationData()

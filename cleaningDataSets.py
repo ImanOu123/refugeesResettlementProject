@@ -1,6 +1,7 @@
 import csv
 from openpyxl import load_workbook
 import shutil
+import pandas as pd
 
 def cleanHousingData():
     def columnAverages(filepath, sheetName, column1, column2, cellStartRow):
@@ -110,6 +111,7 @@ def cleanHousingData():
     convertHousingVR()
 
     convertHousingRP()
+
 def cleanEducationData():
     cleanHousingData()
 
@@ -153,6 +155,43 @@ def cleanEducationData():
 
     shutil.move("educationData.csv", "workingData/SchoolsData/educationData.csv")
 
+def cleanHealthcareData():
+    output_healthcareDataFile = "HealthcareData.csv"
+
+    healthcareName = {}
+    serviceType = {}
+    healthcareLocation = {}
+
+    healthcareDictKey = 0
+
+    with open("workingData/HealthcareData/Ministry_of_Health_Service_Provider_Locations.csv") as csv_file:
+
+        reader = csv.reader(csv_file, delimiter=',')
+
+        for row in reader:
+
+            if healthcareDictKey >= 1:
+
+                healthcareName["heathcareName" + str(healthcareDictKey)] = row[6]
+                serviceType["serviceType" + str(healthcareDictKey)] = row[4]
+                healthcareLocation["location" + str(healthcareDictKey)] = row[13]
+
+            healthcareDictKey += 1
+
+        # place data in lists
+
+        with open(output_healthcareDataFile, "w", newline='') as result:
+
+            writer = csv.writer(result)
+
+            writer.writerow(["Location", "HealthcareName", "ServiceType"])
+
+            for(loc, name, ty) in zip(healthcareLocation.values(), healthcareName.values(), serviceType.values()):
+                writer.writerow([loc, name, ty])
+
+        shutil.move("HealthcareData.csv", "workingData/HealthcareData/HealthcareData.csv")
+
 
 cleanHousingData()
 cleanEducationData()
+cleanHealthcareData()

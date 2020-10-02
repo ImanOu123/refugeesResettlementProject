@@ -1,10 +1,17 @@
 import csv
 from openpyxl import load_workbook
 import shutil
-import pandas as pd
 
 def cleanHousingData():
+    """ This function creates two CSV files that includes data about Housing; Vacancy Rates and Rent Prices.
+    The format of the data is as follows: Location, Bachelor, 1  Bedroom, 2 Bedroom, 3 Bedroom + """
+
     def columnAverages(filepath, sheetName, column1, column2, cellStartRow):
+
+        """ This function creates a list for each column in the final CSV files based on average of the two data
+        provided. """
+
+        # reading excel files setup
 
         workbook = load_workbook(filename=filepath, data_only=True)
 
@@ -30,13 +37,15 @@ def cleanHousingData():
             cellsOct19["19cell" + str(i)] = spreadsheet[column2 + str(cellRow)].value
             cellRow += 1
 
-        # combine column as averages
+        # combine column as averages in one column called "averagesList"
 
         averagesList = {}
 
         n = 0
 
         for (i, e) in zip(cellsOct18.values(), cellsOct19.values()):
+
+            # missing data is equated to zero or ignored
 
             if i == '**' and e == '**':
                 averagesList["averagecell" + str(n)] = 0
@@ -55,9 +64,16 @@ def cleanHousingData():
         return averagesList.values()
 
     def locationDic(filepath, sheetName, cellStartRow):
+
+        """ This function creates a dictionary with the locations of the houses. """
+
+        #reading excel files setup
+
         workbook = load_workbook(filename=filepath, data_only=True)
 
         spreadsheet = workbook[sheetName]
+
+        # creates a dictionary for locations
 
         locationDic = {}
 
@@ -65,19 +81,32 @@ def cleanHousingData():
             locationDic["location" + str(i)] = spreadsheet["A" + str(cellStartRow)].value
             cellStartRow += 1
 
+        # returns list of values of dictionary
+
         return locationDic.values()
 
+    # original housing data file path
 
     housingDataPath = "workingData/HousingData/OntarioHousingData.xlsx"
 
     def convertHousingVR():
+        """ This function applies above functions on the orignal housing data, then, creates an CSV file with the
+        housing vacancy rates data. """
+
         housingSheet1 = "Table 3.1.1"
+
+        # apply locationDic function on Vacancy Rates data
+
         locationVR = locationDic(housingDataPath, housingSheet1, 8)
+
+        # apply columnAverages function on Vacancy Rates data
 
         sheetVRBachelor = columnAverages(housingDataPath, housingSheet1, "B", "D", 8)
         sheetVROneB = columnAverages(housingDataPath, housingSheet1, "G", "I", 8)
         sheetVRTwoB = columnAverages(housingDataPath, housingSheet1, "L", "N", 8)
         sheetVRThreeB = columnAverages(housingDataPath, housingSheet1, "Q", "S", 8)
+
+        # create a new CSV file with the housing vacancy rates data
 
         with open('housingVacancyRates.csv', 'w', newline='') as file:
             writer = csv.writer(file)
@@ -87,17 +116,29 @@ def cleanHousingData():
                                                        sheetVRThreeB):
                 writer.writerow([loc, Bach, OneB, TwoB, ThreeB])
 
+        # move file from current directory to specified one for data
+
         shutil.move("housingVacancyRates.csv", "workingData/HousingData/housingVacancyRates.csv")
 
 
     def convertHousingRP():
+        """ This function applies above functions on the orignal housing data, then, creates an CSV file with the
+                housing rent prices data. """
+
         housingSheet2 = "Table 3.1.2"
+
+        # apply locationDic function on Vacancy Rates data
+
         locationRP = locationDic(housingDataPath, housingSheet2, 7)
+
+        # apply columnAverages function on Rent Prices data
 
         sheetRPBachelor = columnAverages(housingDataPath, housingSheet2, "B", "D", 7)
         sheetRPOneB = columnAverages(housingDataPath, housingSheet2, "F", "H", 7)
         sheetRPTwoB = columnAverages(housingDataPath, housingSheet2, "J", "L", 7)
         sheetRPThreeB = columnAverages(housingDataPath, housingSheet2, "N", "P", 7)
+
+        # create a new CSV file with the housing rent prices data
 
         with open('housingRentPrices.csv', 'w', newline='') as file:
             writer = csv.writer(file)
@@ -106,6 +147,8 @@ def cleanHousingData():
             for (loc, Bach, OneB, TwoB, ThreeB) in zip(locationRP, sheetRPBachelor, sheetRPOneB, sheetRPTwoB, sheetRPThreeB):
                 writer.writerow([loc, Bach, OneB, TwoB, ThreeB])
 
+        # move file from current directory to specified one for data
+
         shutil.move("housingRentPrices.csv", "workingData/HousingData/housingRentPrices.csv")
 
     convertHousingVR()
@@ -113,11 +156,16 @@ def cleanHousingData():
     convertHousingRP()
 
 def cleanEducationData():
-    cleanHousingData()
+    """ This function creates an CSV file that includes data about Education.
+        The format of the data is as follows: Location, schoolName, schoolType, schoolLevel, gradeRange """
+
+    # reading excel files setup
 
     educationWorkbook = load_workbook(filename="workingData/SchoolsData/publicly_funded_schools_xlsx_september_2020_en.xlsx", data_only=True)
 
     educationSpreadsheet = educationWorkbook["EN"]
+
+    # initialize/define variables for column lists
 
     schoolNames = {}
     schoolLocations = {}
@@ -125,7 +173,6 @@ def cleanEducationData():
     schoolLevel = {}
     gradeRange = {}
 
-    schoolKey = 0
     schoolRow = 2
     schoolListNumber = 0
 
@@ -134,6 +181,8 @@ def cleanEducationData():
         if educationSpreadsheet["K" + str(schoolRow)].value == "Not applicable":
 
             schoolDictKey = "school" + str(schoolListNumber)
+
+            # create lists for columns
 
             schoolNames[schoolDictKey] = educationSpreadsheet["G" + str(schoolRow)].value
             schoolLocations[schoolDictKey] = educationSpreadsheet["O" + str(schoolRow)].value
@@ -146,6 +195,8 @@ def cleanEducationData():
 
         schoolListNumber += 1
 
+    # create a file with the education data
+
     with open('educationData.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["schoolLocation", "schoolName", "schoolType", "schoolLevel", "gradeRange"])
@@ -153,9 +204,14 @@ def cleanEducationData():
         for (loc, name, ty, level, grades) in zip(schoolLocations.values(), schoolNames.values(), schoolType.values(), schoolLevel.values(), gradeRange.values()):
             writer.writerow([loc, name, ty, level, grades])
 
+    # move file from current directory to specified one for data
+
     shutil.move("educationData.csv", "workingData/SchoolsData/educationData.csv")
 
 def cleanHealthcareData():
+    """ This function creates an CSV file that includes data about Healthcare.
+            The format of the data is as follows: Location, healthcareName, serviceType """
+
     output_healthcareDataFile = "HealthcareData.csv"
 
     healthcareName = {}
@@ -163,6 +219,7 @@ def cleanHealthcareData():
     healthcareLocation = {}
 
     healthcareDictKey = 0
+
 
     with open("workingData/HealthcareData/Ministry_of_Health_Service_Provider_Locations.csv") as csv_file:
 
@@ -188,6 +245,8 @@ def cleanHealthcareData():
 
             for(loc, name, ty) in zip(healthcareLocation.values(), healthcareName.values(), serviceType.values()):
                 writer.writerow([loc, name, ty])
+
+        # move file to specified folder for data
 
         shutil.move("HealthcareData.csv", "workingData/HealthcareData/HealthcareData.csv")
 

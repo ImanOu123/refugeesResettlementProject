@@ -1,9 +1,95 @@
 import csv
 import json
-import requests
 import re
 
-def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesChildren): # YNdisabilities, typeDisabilities, YNelderly, religion, firstLang, secondLang):
+def cityNameFunction(location):
+    """This function inputs a location of any classfication (city or neighbourhood) and returns the city that the location is in"""
+
+    locationsList = []
+    locationsDict = {}
+
+    # organize OSM data into helpful lists/dict
+
+    with open('OSMCitydata.txt') as json_file:
+        data = json.load(json_file)
+
+        # create list with info on location (name, type of place, is_in (for neighbourhoods))
+
+        for element in data['elements']:
+            # print(element)
+            if 'is_in' in element['tags']:
+                locationsList.append([element['tags']['name'], element['tags']['place'], element['tags']['is_in']])
+            elif element['tags']['place'] == 'neighbourhood':
+                continue
+            else:
+                locationsList.append([element['tags']['name'], element['tags']['place']])
+
+        # create a dictionary that categorizes each location under a city
+
+        for loc in locationsList:
+            if 'city' in loc:
+                locationsDict[loc[0]] = [loc[0]]
+
+            elif 'neighbourhood' in loc:
+                # classify neighbourhood under city
+                isInCity = loc[2]
+
+                for cityName in locationsDict:
+                    if isInCity == cityName:
+                        locationsDict[cityName] = [cityName, loc[0]]
+
+                    elif cityName in isInCity: # for city names that are Toronto but longer
+                        locationsDict[cityName].append(loc[0])
+
+        # main task of function
+
+        for city, names in locationsDict.items():
+            if location in names:
+                return city
+
+        return "Not Found"
+
+def religiousInstit(religion):
+    """This function inputs a religion and returns a list with names and locations of religious institutions affiliated with the religion"""
+
+    locationsList = []
+    religions = []
+    locationsDict = {}
+
+    with open('OSMReligiousInstitdata.txt') as json_file:
+        data = json.load(json_file)
+
+        # create list with info on location (location, name, religion)
+
+        for element in data['elements']:
+            # if location is written as a tag
+
+            if 'addr:city' in element['tags'] and 'name' in element['tags'] and 'religion' in element['tags']:
+                locationsList.append([element['tags']['addr:city'], element['tags']['name'], element['tags']['religion']])
+                religions.append(element['tags']['religion'])
+
+            # if location is written within the name of institution
+
+            elif 'name' in element['tags'] and 'religion' in element['tags']:
+                for loc in ['Windsor', 'Ottawa', 'London', 'Toronto', 'Kitchener', 'Hamilton']: # can expand list, but kept it to 'friendly' locations for simpicity
+                    if loc in element['tags']['name']:
+                        locationsList.append([loc, element['tags']['name'], element['tags']['religion']])
+                        religions.append(element['tags']['religion'])
+
+        # create a dictionary that categorizes each location under a religion
+
+        for rel in religions:
+            locationsDict[rel] = []
+            for elem in locationsList:
+                if rel in elem:
+                    locationsDict[rel].append(elem)
+
+        for rel, info in locationsDict.items():
+            if religion == rel:
+                return info
+
+
+def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesChildren, YNdisabilities, typeDisabilities, YNelderly, religion):
     """This function ..."""
     # directing function to data
 
@@ -120,25 +206,61 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
 
     oldidealHousingLocations = idealHousingLocations
     idealHousingLocations = []
-    strList = []
 
     for loc in oldidealHousingLocations:
-        strList = re.split('[-\s]', loc)
+        strList = re.split('[-/\s]', loc)
 
-        if 'CMA' in strList or 'CA' in strList:
+        if 'CMA' in strList or 'CA' in strList or 'MU' in strList:
             strList.pop(-1)
 
-        print(strList)
+        if "Chatham-Kent" in loc:
+            idealHousingLocations.append("Chatham-Kent")
 
+        elif "Zone" in loc:
+            str1 = " ".join(strList[4:])
+            idealHousingLocations.append(str1)
 
+        elif "-" in loc:
+            if "St." in loc:
+                if len(strList) == 2:
+                    str1 = " ".join(strList[:2])
+                    idealHousingLocations.append(str1)
+                elif len(strList) == 3:
+                    str1 = " ".join(strList[:2])
+                    str2 = strList[2]
+                    idealHousingLocations = idealHousingLocations + [str1, str2]
 
+            elif len(strList) == 3:
+                str1 = strList[0]
+                str2 = strList[1]
+                str3 = strList[2]
+                idealHousingLocations = idealHousingLocations + [str1, str2, str3]
 
+            elif len(strList) == 2 or len(strList) == 4:
+                str1 = strList[0]
+                str2 = strList[1]
+                idealHousingLocations = idealHousingLocations + [str1, str2]
+
+        elif "/" in loc:
+            str1 = " ".join(strList[:2])
+            idealHousingLocations.append(str1)
+
+        elif len(strList) >= 2:
+            str1 = " ".join(strList[:2])
+            idealHousingLocations.append(str1)
+
+        elif "Ste." in loc:
+            if len(strList) == 3:
+                idealHousingLocations.append("Sault Ste. Marie")
+            else:
+                continue
+        else:
+            str1 = strList[0]
+            idealHousingLocations.append(str1)
 
     # part two = education
 
     # specify school locations
-
-
 
     schoolInfo = []
 
@@ -218,83 +340,50 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
         HealthcareInfoRow = [loc[1], name[1], type[1]]
         idealHealthcare.append(HealthcareInfoRow)
 
-    #creating dictionary with ideal places within locations
+    # creating dictionary with ideal places within locations
+
+    # filter locations to only those within cityNameFunction
+
+    filteredidealHousingLoc = []
+
+    # print(idealHousingLocations)
+
+    for loc in idealHousingLocations:
+
+        filteredLoc = cityNameFunction(loc)
+
+        if filteredLoc == "Not Found":
+            continue
+
+        else:
+            filteredidealHousingLoc.append(filteredLoc)
+
+    print(filteredidealHousingLoc)
+
+    # filter locations to those that are considered to be the most 'friendly' locations for immigrants/refugees
+    friendlyHousingLoc = []
+
+    for elem in filteredidealHousingLoc:
+        if elem in ['Windsor', 'Ottawa', 'London', 'Toronto', 'Kitchener', 'Hamilton']:
+            friendlyHousingLoc.append(elem)
+
+    print(friendlyHousingLoc)
 
     idealPlacesDict = {}
 
-    for loc in idealHousingLocations:
-        idealPlacesDict[loc] = []
+    for loc in friendlyHousingLoc: # find a way to reduce computation time
+        idealPlacesDict[loc] = {"Schools": [], "Healthcare": []}
 
-    print(idealPlacesDict)
+        for (locations, name) in idealSchoolNameandLocations:
+            filteredLocation = cityNameFunction(locations)
+            if filteredLocation == loc:
+                idealPlacesDict[loc]["Schools"].append(name)
 
-print(formFunction('Canada', '3to5', 'Y', 3, [10, 14]))
+        for (locations, name, type) in idealHealthcare:
+            filteredLocation = cityNameFunction(locations)
+            if filteredLocation == loc:
+                idealPlacesDict[loc]["Healthcare"].append([name, type])
 
-
-def cityNameFunction(location):
-    """This function inputs a location of any classfication (city or neighbourhood) and returns the city that the location is in"""
-
-    # get OSM data from OSM API
-
-    overpass_url = "http://overpass-api.de/api/interpreter"
-    overpass_query = """
-        [out:json];
-        area(3600068841) -> .a;
-        (
-            node["place"="city"](area.a);
-            node["place"="neighbourhood"](area.a);
-        );
-        out;
-
-        """
-    OSMdata = requests.get(overpass_url, params={'data': overpass_query}).json()
-
-    with open('OSMdata.txt', 'w') as outfile:
-        json.dump(OSMdata, outfile)
-
-    locationsList = []
-    locationsDict = {}
-
-    # organize OSM data into helpful lists/dict
-
-    with open('OSMdata.txt') as json_file:
-        data = json.load(json_file)
-
-        # create list with info on location (name, type of place, is_in (for neighbourhoods))
-
-        for element in data['elements']:
-            # print(element)
-            if 'is_in' in element['tags']:
-                locationsList.append([element['tags']['name'], element['tags']['place'], element['tags']['is_in']])
-            elif element['tags']['place'] == 'neighbourhood':
-                continue
-            else:
-                locationsList.append([element['tags']['name'], element['tags']['place']])
-
-        # print(locationsList)
-
-        # create a dictionary that categorizes each location under a city
-
-        for loc in locationsList:
-            if 'city' in loc:
-                locationsDict[loc[0]] = [loc[0]]
-
-            elif 'neighbourhood' in loc:
-                # classify neighbourhood under city
-                isInCity = loc[2]
-
-                for cityName in locationsDict:
-                    if isInCity == cityName:
-                        locationsDict[cityName] = [cityName, loc[0]]
-
-                    elif cityName in isInCity: # for city names that are Toronto but longer
-                        locationsDict[cityName].append(loc[0])
-
-        print(locationsDict)
-
-        # main task of function
-
-        for city, names in locationsDict.items():
-            if location in names:
-                return city
-
-# print(cityNameFunction('Heritage Green'))
+#print(formFunction('Canada', '3to5', 'Y', 3, [10, 14], 'yes', 'deaf', 'yes', 'islam'))
+# print(cityNameFunction('Cambridge'))
+print(religiousInstit('muslim'))

@@ -1,6 +1,8 @@
 import csv
 import json
 import re
+import random
+
 
 def cityNameFunction(location):
     """This function inputs a location of any classfication (city or neighbourhood) and returns the city that the location is in"""
@@ -49,6 +51,7 @@ def cityNameFunction(location):
 
         return "Not Found"
 
+
 def religiousInstit(religion):
     """This function inputs a religion and returns a list with names and locations of religious institutions affiliated with the religion"""
 
@@ -94,6 +97,7 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
     # directing function to data
 
     if resettleCountry == 'Canada':  # if data placed in database, will be directed to place in database
+
         housingRPFilePath = "workingData/HousingData/housingRentPrices.csv"
         housingVRFilePath = "workingData/HousingData/housingVacancyRates.csv"
 
@@ -358,21 +362,26 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
         else:
             filteredidealHousingLoc.append(filteredLoc)
 
-    print(filteredidealHousingLoc)
+    # create ideal Religious Institutions Locations
+
+    idealReligiousInstitLoc = religiousInstit(religion)
 
     # filter locations to those that are considered to be the most 'friendly' locations for immigrants/refugees
+
     friendlyHousingLoc = []
 
+    researchedFriendlyHousignLoc = ['Windsor', 'Ottawa', 'London', 'Toronto', 'Kitchener', 'Hamilton']
+
     for elem in filteredidealHousingLoc:
-        if elem in ['Windsor', 'Ottawa', 'London', 'Toronto', 'Kitchener', 'Hamilton']:
+        if elem in researchedFriendlyHousignLoc:
             friendlyHousingLoc.append(elem)
 
-    print(friendlyHousingLoc)
+    # print(friendlyHousingLoc)
 
     idealPlacesDict = {}
 
     for loc in friendlyHousingLoc: # find a way to reduce computation time
-        idealPlacesDict[loc] = {"Schools": [], "Healthcare": []}
+        idealPlacesDict[loc] = {"Schools": [], "Healthcare": {}, "Religious Institutions": []}
 
         for (locations, name) in idealSchoolNameandLocations:
             filteredLocation = cityNameFunction(locations)
@@ -380,10 +389,109 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
                 idealPlacesDict[loc]["Schools"].append(name)
 
         for (locations, name, type) in idealHealthcare:
+
+            if not idealPlacesDict[loc]["Healthcare"].get(type):
+                idealPlacesDict[loc]["Healthcare"][type] = []
+
             filteredLocation = cityNameFunction(locations)
             if filteredLocation == loc:
-                idealPlacesDict[loc]["Healthcare"].append([name, type])
+                idealPlacesDict[loc]["Healthcare"][type].append(name)
 
-#print(formFunction('Canada', '3to5', 'Y', 3, [10, 14], 'yes', 'deaf', 'yes', 'islam'))
+        for (locations, name, type) in idealReligiousInstitLoc:
+            filteredLocation = cityNameFunction(locations)
+            if filteredLocation == loc:
+                idealPlacesDict[loc]["Religious Institutions"].append(name)
+
+    # find top 3 best locations for resettlement (basis: location with institutions that cater to certain
+    # disabilities, the elderly and have the most religious institutions - for a certain religion)
+
+    bestDisabLocations = []
+
+    # filter locations to most ideal for certain disabilities
+
+    # code specific to Canadian institutions
+
+    if YNdisabilities == 'Y':
+        if 'blind' in typeDisabilities:
+            for loc in idealPlacesDict:
+                if "Vision Loss" in idealPlacesDict[loc]["Healthcare"]["Community Support Service"]:
+                    bestDisabLocations.append(loc)
+
+        elif 'deaf' in typeDisabilities:
+            for loc in idealPlacesDict:
+                if "deaf" in idealPlacesDict[loc]["Healthcare"]["Community Support Service"] or "deaf" in idealPlacesDict[loc]["Healthcare"]["Long-Term Care Home"]:
+                    bestDisabLocations.append(loc)
+
+        elif 'mental illness' in typeDisabilities:
+            for loc in idealPlacesDict:
+                if "Mental Health" in idealPlacesDict[loc]["Healthcare"]["Community Support Service"] or "Mental Health" in idealPlacesDict[loc]["Healthcare"]["Hospital - Site"] or "Mental Health" in idealPlacesDict[loc]["Healthcare"]["Hospital - Site"]:
+                    bestDisabLocations.append(loc)
+                elif idealPlacesDict[loc]["Healthcare"].get('Mental Health and Addiction Organization'):
+                    bestDisabLocations.append(loc)
+
+    # filter locations to most ideal for elderly
+
+    bestEldLocations = []
+
+    if YNelderly == 'Y':
+        for loc in idealPlacesDict:
+            if idealPlacesDict[loc]["Healthcare"].get('Retirement Home'):
+                bestEldLocations.append(loc)
+
+    # filter locations to most ideal for religion
+
+    bestRelLocations = []
+
+    for loc in idealPlacesDict:
+        if idealPlacesDict[loc].get("Religious Institutions"):
+            if len(idealPlacesDict[loc]["Religious Institutions"]) > 2:
+                bestRelLocations.append(loc)
+
+    # create list with all locations with specialized institutions
+
+    bestSpecLocations = bestRelLocations + bestEldLocations + bestDisabLocations
+
+    finalBestSpecLocations = []
+
+    # find locations with duplicates and place as best locations
+
+    for loc in bestSpecLocations:
+        count = bestSpecLocations.count(loc)
+
+        if count >= 2:
+            finalBestSpecLocations.append(loc)
+
+    # remove duplicates
+
+    finalBestSpecLocations = list(dict.fromkeys(bestSpecLocations))
+
+    print(finalBestSpecLocations)
+
+    # finding top 3 locations for resettlement
+
+    if not finalBestSpecLocations:
+        top3Loc = random.sample(researchedFriendlyHousignLoc, k=3)
+    else:
+        top3Loc = random.sample(finalBestSpecLocations, k=3)
+
+    # filling in the gaps for top 3 list
+
+    if len(top3Loc) == 2:
+        top3Loc = top3Loc + random.sample(researchedFriendlyHousignLoc, k=1)
+    elif len(top3Loc) == 1:
+        top3Loc = top3Loc + random.sample(researchedFriendlyHousignLoc, k=2)
+
+    # filter dictionary to contain only the top 3 locations
+
+    for loc in idealPlacesDict:
+        if loc not in top3Loc:
+            del idealPlacesDict[loc]
+
+    idealPlacesJSON = json.dumps(idealPlacesDict)
+
+    return idealPlacesJSON
+
+print(formFunction('Canada', '3to5', 'Y', 3, [10, 14], 'Y', ['mental illness'], 'Y', 'muslim'))
+
 # print(cityNameFunction('Cambridge'))
-print(religiousInstit('muslim'))
+# print(religiousInstit('muslim'))

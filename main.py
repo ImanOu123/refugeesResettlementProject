@@ -482,10 +482,13 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
         top3Loc = top3Loc + random.sample(researchedFriendlyHousignLoc, k=2)
 
     # filter dictionary to contain only the top 3 locations
-
+    delLoc = []
     for loc in idealPlacesDict:
         if loc not in top3Loc:
-            del idealPlacesDict[loc]
+            delLoc.append(loc)
+
+    for e in delLoc:
+        del idealPlacesDict[e]
 
     idealPlacesJSON = json.dumps(idealPlacesDict)
 

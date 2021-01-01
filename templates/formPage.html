@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Refugee Resettlement Project</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/CSS/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-custom" style="height: 50px; margin: 20px">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">LOGO</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active" style="font-size: 40px"><a href="#">Home</a></li>
+      <li style="font-size: 40px"><a href="#">About</a></li>
+      <li style="font-size: 40px"><a href="/form">Form</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container" style="width: 700px; margin-left: 100px; margin-top: 50px; float:left">
+    <h1 style="font-size:30px"> Please Fill Out The Following Form:</h1>
+    <form method="POST" action="/results">
+
+        <h2> Question 1: </h2>
+        <h3> Name of Principal Applicant: </h3> <input type="text" name="name" size="50" style="font-size:30px"><br>
+
+        <h2> Question 2: </h2>
+        <label for="countryoforigin">Country of Origin:</label>
+        <select id="countryoforigin" name="countryoforigin">
+            <option value="unselected">Unselected</option>
+            <option value="syria">Syrian Arab Republic</option>
+            <option value="venezuela">Venezuela</option>
+            <option value="afghanistan">Afghanistan</option>
+            <option value="southsudan">South Sudan</option>
+        </select>
+
+        <h2> Question 3: </h2>
+        <label for="countryofresettlement">Country of Resettlement:</label>
+        <select id="countryofresettlement" name="countryofresettlement">
+            <option value="unselected">Unselected</option>
+            <option value="canada">Canada</option>
+            <option value="germany">Germany</option>
+            <option value="USA">United States of America</option>
+            <option value="australia">Australia</option>
+            <option value="UK">United Kingdom</option>
+        </select>
+
+        <h2> Question 4: </h2>
+        <label for="familysize">Family Size:</label>
+        <select id="familysize" name="familysize">
+            <option value="unselected">Unselected</option>
+            <option value="1to2">1 - 2</option>
+            <option value="3to5">3 - 5</option>
+            <option value="6+">6+</option>
+        </select>
+
+        <h2> Question 5: </h2>
+        <label for="YNchildren">Do you have children:</label>
+        <select id="YNchildren" name="YNchildren">
+            <option value="unselected">Unselected</option>
+            <option value="Ychild">Yes</option>
+            <option value="Nchild">No</option>
+        </select>
+
+        <h2> Question 6: </h2>
+        <h3> Ages of Children (select one or more): </h3>
+        <input type="checkbox" id="age1" name="age1" value="1to4">
+        <label for="age1"> 1 - 4 </label><br>
+        <input type="checkbox" id="age2" name="age2" value="5to10">
+         <label for="age2"> 5 - 10 </label><br>
+        <input type="checkbox" id="age3" name="age3" value="11to13">
+        <label for="age3"> 11 - 13 </label>
+        <input type="checkbox" id="age4" name="age4" value="14to18">
+        <label for="age4"> 14 - 18 </label>
+
+        <h2> Question 7: </h2>
+        <label for="YNdisab">Do any members of your family have disabilities:</label>
+        <select id="YNdisab" name="YNdisab">
+            <option value="unselected">Unselected</option>
+            <option value="Ydisab">Yes</option>
+            <option value="Ndisab">No</option>
+        </select>
+
+        <h2> Question 8: </h2>
+        <h3> Disabilities(select one or more): </h3>
+        <input type="checkbox" id="disab1" name="disab1" value="disab1">
+        <label for="disab1">Vision Impairment</label><br>
+        <input type="checkbox" id="disab2" name="disab2" value="disab2">
+         <label for="disab2">Deaf or Hard of Hearing</label><br>
+        <input type="checkbox" id="disab3" name="disab3" value="disab3">
+        <label for="disab3"> Mental Illness </label>
+
+        <h2> Question 9: </h2>
+        <label for="YNeld">Are any members of your family considered elderly:</label>
+        <select id="YNeld" name="YNeld">
+            <option value="unselected">Unselected</option>
+            <option value="Yeld">Yes</option>
+            <option value="Neld">No</option>
+        </select>
+
+        <h2> Question 10: </h2>
+        <label for="religion">Religion: </label>
+        <select id="religion" name="religion">
+            <option value="unselected">Unselected</option>
+            <option value="islam">Islam</option>
+            <option value="atheism">Atheism</option>
+            <option value="christianity">Christianity</option>
+            <option value="judaism">Judaism</option>
+        </select>
+
+        <h2> Question 11: </h2>
+        <label for="firstLang">First Language: </label>
+        <select id="firstLang" name="firstLang">
+            <option value="unselected">Unselected</option>
+            <option value="arabic">Arabic</option>
+            <option value="english">English</option>
+            <option value="spanish">Spanish</option>
+            <option value="persian">Persian</option>
+            <option value="french">French</option>
+            <option value="german">German</option>
+            <option value="turkish">Turkish</option>
+        </select>
+
+        <h2> Question 12: </h2>
+        <label for="secondLang">First Language: </label>
+        <select id="secondLang" name="secondLang">
+            <option value="unselected">Unselected</option>
+            <option value="arabic">Arabic</option>
+            <option value="english">English</option>
+            <option value="spanish">Spanish</option>
+            <option value="persian">Persian</option>
+            <option value="french">French</option>
+            <option value="german">German</option>
+            <option value="turkish">Turkish</option>
+        </select><br>
+
+
+        <input type="submit" value="Submit" style="font-size:30px; margin-top: 50px"><br>
+
+    </form>
+
+</div>
+
+</body>

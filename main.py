@@ -92,7 +92,7 @@ def religiousInstit(religion):
                 return info
 
 
-def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesChildren, YNdisabilities, typeDisabilities, YNelderly, religion):
+def formFunction(resettleCountry, familySize, YNchildren, agesChildren, YNdisabilities, typeDisabilities, YNelderly, religion):
     """This function ..."""
     # directing function to data
 
@@ -300,11 +300,11 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
 
     if YNchildren == 'Y':
         # match children to schools based on age
-        if 6 in agesChildren or 7 in agesChildren or 8 in agesChildren or 9 in agesChildren or 10 in agesChildren:
+        if '6' in agesChildren or '7' in agesChildren or '8' in agesChildren or '9' in agesChildren or '10' in agesChildren:
             schoolLevel.append('elem')
 
-        if 11 in agesChildren or 12 in agesChildren or 13 in agesChildren or 14 in agesChildren or 15 in agesChildren \
-                or 16 in agesChildren or 17 in agesChildren or 18 in agesChildren:
+        if '11' in agesChildren or '12' in agesChildren or '13' in agesChildren or '14' in agesChildren or '15' in agesChildren \
+                or '16' in agesChildren or '17' in agesChildren or '18' in agesChildren:
             schoolLevel.append('secon')
 
     if schoolLevel == ['elem']:
@@ -490,11 +490,9 @@ def formFunction(resettleCountry, familySize, YNchildren, numberChildren, agesCh
     for e in delLoc:
         del idealPlacesDict[e]
 
-    idealPlacesJSON = json.dumps(idealPlacesDict)
+    return idealPlacesDict, top3Loc
 
-    return idealPlacesJSON
-
-print(formFunction('Canada', '3to5', 'Y', 3, [10, 14], 'Y', ['mental illness'], 'Y', 'muslim'))
+# print(formFunction('Canada', '3to5', 'Y', ['10', '14'], 'Y', ['mental illness'], 'Y', 'muslim'))
 
 # print(cityNameFunction('Cambridge'))
 # print(religiousInstit('muslim'))
